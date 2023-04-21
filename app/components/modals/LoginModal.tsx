@@ -1,11 +1,11 @@
 'use client';
 
-import axios, { AxiosError } from 'axios';
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useCallback, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import useLoginModal from '@/app/hook/useLoginModal';
+import useRegisterModal from '@/app/hook/useRegisterModal';
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../inputs/Input';
@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 const LoginModal = () => {
   const router = useRouter();
   const loginModal = useLoginModal();
+  const registerModal = useRegisterModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -50,6 +51,11 @@ const LoginModal = () => {
     }
   };
 
+  const toggle = useCallback(() => {
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal]);
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome back" subtitle="Login to your account!" />
@@ -73,9 +79,9 @@ const LoginModal = () => {
       <Button outline label="Continue with Github" icon={AiFillGithub} onClick={() => {}} />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex flex-row items-center gap-2 justify-center">
-          <div>Donot have an account?</div>
-          <div onClick={loginModal.onClose} className="text-neutral-800 cursor-pointer hover:underline">
-            Register
+          <div>First time to come Airbnb?</div>
+          <div onClick={toggle} className="text-neutral-800 cursor-pointer hover:underline">
+            Create an account
           </div>
         </div>
       </div>

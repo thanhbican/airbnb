@@ -1,11 +1,12 @@
 'use client';
 
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { useCallback, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import useRegisterModal from '@/app/hook/useRegisterModal';
+import useLoginModal from '@/app/hook/useLoginModal';
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../inputs/Input';
@@ -15,6 +16,7 @@ import { signIn } from 'next-auth/react';
 
 const RegisterModal = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -35,6 +37,7 @@ const RegisterModal = () => {
     try {
       await axios.post('/api/register', data);
       registerModal.onClose();
+      loginModal.onOpen();
     } catch (err) {
       if (axios.isAxiosError(err)) {
         toast.error(err.message);
@@ -45,6 +48,11 @@ const RegisterModal = () => {
       setIsLoading(false);
     }
   };
+
+  const toggle = useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [loginModal, registerModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -71,7 +79,7 @@ const RegisterModal = () => {
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex flex-row items-center gap-2 justify-center">
           <div>Already have an account?</div>
-          <div onClick={registerModal.onClose} className="text-neutral-800 cursor-pointer hover:underline">
+          <div onClick={toggle} className="text-neutral-800 cursor-pointer hover:underline">
             Login
           </div>
         </div>
